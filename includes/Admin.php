@@ -32,7 +32,8 @@
 						action : "query",
 						meta : "siteinfo",
 						format : "json",
-						siprop : "general|statistics"
+						siprop : "general|statistics",
+                                                origin : "*"
 					},
 					function(response) {
 						var info = response.query.general;
@@ -73,6 +74,7 @@
 								list:    "allusers",
 								augroup: "sysop",
 								aulimit: 500,
+                                                                origin : "*",
 								format:  "json"
 
 							},
@@ -103,6 +105,7 @@
 								list:    "allusers",
 								augroup: "bureaucrat",
 								aulimit: 500,
+                                                                origin : "*",
 								format:  "json"
 
 							},
@@ -137,6 +140,7 @@
 								list:    "allusers",
 								augroup: "Curator",
 								aulimit: 500,
+                                                                origin : "*",
 								format:  "json"
 
 							},
@@ -170,7 +174,8 @@
 								list:    "allusers",
 								augroup: "Beta-tester",
 								aulimit: 500,
-								format:  "json"
+                                                                origin : "*",
+  								format:  "json"
 
 							},
 							function( response ) {

@@ -241,10 +241,26 @@ class WikiBlender {
 		$name = $wiki['name'];
 		$logo = $wiki['logo'];
 
-		return
-			"<table class='wiki-block'>
-				<tr><td>
-					<a href='$path'>
+// INSERT subdomain fix
+                $server = self::$server;
+                // transform $server https://demo.qualitybox.us/
+                // to https://other.qualitybox.us/wiki/ if 'other' is the current subdomain requested
+                $patterns = array();
+                $patterns[0] = "%^(https?\://)%";
+                $patterns[1] = "%(?://)([^\.]+)%"; // the ante-penultimate aka subdomain
+                $patterns[2] = "%\.([^\.]+)\.([a-z]+)\/$%i";
+                $replacements = array();
+                $replacements[0] = "$1"; //protocol
+                $replacements[1] = "//$path"; // subdomain
+                $replacements[2] = ".$1.$2/wiki/";
+                ksort($patterns);
+                ksort($replacements);
+                $subdomain = preg_replace ($patterns, $replacements, $server);
+
+                return
+                        "<table class='wiki-block'>
+                                <tr><td>
+                                        <a href='${subdomain}'>
 						<img src='$logo' />
 						<h3>$name</h3>
 					</a>
