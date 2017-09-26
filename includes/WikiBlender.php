@@ -163,8 +163,13 @@ class WikiBlender {
 			if ( in_array( $wiki, self::$blenderExcludeWikis ) ) {
 				continue;
 			}
+			$re = '%//([^.]*)\.([^.]*)\.([^/]*)%';
+			$str = self::$server;
+			$replacement = "//$wiki.$2.$3";
+			$domain = preg_replace($re, $replacement, $str);
 			$wikiInfo = array(
 				'path' => $wiki,
+				'domain' => $domain,
 				'name' => self::getWikiSiteName( $wiki ),
 				'logo' => "wikis/$wiki/config/logo.png"
 			);
@@ -220,47 +225,26 @@ class WikiBlender {
 
 	public static function htmlHeader () {
 		$server = self::$server;
-
-		$js_wiki = array();
-		foreach( self::getAllWikis() as $wiki ) {
-			$path = $wiki["path"];
-			$wiki_js_obj[] = "'$path':{}";
-		}
-		$wiki_js_obj = "{".implode(",",$wiki_js_obj)."}";
+		$json = json_encode (self::getAllWikis());
 
 		return
 			"<script type='text/javascript'>
 				var WikiBlenderServer = '$server';
-				var WikiBlenderWikis = $wiki_js_obj;
+				var WikiBlenderWikis = $json;
 			</script>";
 	}
 
 	public static function getLandingPageWikiBlock ( $wiki ) {
 
 		$path = $wiki['path'];
+		$domain = $wiki['domain'];
 		$name = $wiki['name'];
 		$logo = $wiki['logo'];
-
-// INSERT subdomain fix
-                $server = self::$server;
-                // transform $server https://demo.qualitybox.us/
-                // to https://other.qualitybox.us/wiki/ if 'other' is the current subdomain requested
-                $patterns = array();
-                $patterns[0] = "%^(https?\://)%";
-                $patterns[1] = "%(?://)([^\.]+)%"; // the ante-penultimate aka subdomain
-                $patterns[2] = "%\.([^\.]+)\.([a-z]+)\/$%i";
-                $replacements = array();
-                $replacements[0] = "$1"; //protocol
-                $replacements[1] = "//$path"; // subdomain
-                $replacements[2] = ".$1.$2/wiki/";
-                ksort($patterns);
-                ksort($replacements);
-                $subdomain = preg_replace ($patterns, $replacements, $server);
 
                 return
                         "<table class='wiki-block'>
                                 <tr><td>
-                                        <a href='${subdomain}'>
+                                        <a href='${domain}wiki'>
 						<img src='$logo' />
 						<h3>$name</h3>
 					</a>

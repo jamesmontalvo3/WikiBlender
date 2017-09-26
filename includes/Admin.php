@@ -7,7 +7,7 @@
     <?php echo WikiBlender::getResource( 'jquery-ui.min.js' ); ?>
     <?php echo WikiBlender::getResource( 'jquery-ui.min.css' ); ?>
     <?php echo WikiBlender::getResource( 'WikiBlender.css' ); ?>
-
+    <?php $server = WikiBlender::get_server(); ?>
 	<script>
 		$(document).tooltip({
 			content: function() {
@@ -17,23 +17,20 @@
 
 		$(document).ready(function(){
 
-			var wikis = [];
-			for(var w in WikiBlenderWikis) {
-				wikis.push(w);
-			}
-
-			var api = "/api.php";
+			var wikis = WikiBlenderWikis;
+			var api = "w/api.php";
 
 			for (var i=0; i<wikis.length; i++) {
+                        	var url = wikis[i]['domain'] + api;
 
 				$.getJSON(
-					WikiBlenderServer + wikis[i] + api,
+					url,
 					{
 						action : "query",
 						meta : "siteinfo",
 						format : "json",
 						siprop : "general|statistics",
-                                                origin : "*"
+						origin : "*"
 					},
 					function(response) {
 						var info = response.query.general;
