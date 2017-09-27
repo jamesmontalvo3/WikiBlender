@@ -6,6 +6,7 @@ class WikiBlender {
 
 	static $title = "Default Title";
 	static $server;
+	static $blenderMode; // default: 'path' or 'domain'
 	static $wikis;
 	static $footer_links = array();
 	static $admins = array();
@@ -44,6 +45,12 @@ class WikiBlender {
 			self::$server = $blenderServer;
 		} else {
 			die("Please add a server to your BlenderSettings file");
+		}
+
+		if ( isset($blenderMode ) ) {
+			self::$blenderMode = $blenderMode;
+		} else {
+			self::$blenderMode = "path";
 		}
 
 		if ( isset( $blenderScriptPath ) ) {
@@ -140,6 +147,14 @@ class WikiBlender {
 
 	// }
 
+	/** Is this Blender install based on paths (default) domain based */
+	public static function getBlenderMode() {
+		if ( ! isset( self::$blenderMode ) ) {
+			self::$blenderMode = 'path';
+		}
+		return self::$blenderMode;
+	}
+
 	public static function getWikiList () {
 
 		if ( ! isset( self::$blenderWikisDir ) ) {
@@ -163,10 +178,16 @@ class WikiBlender {
 			if ( in_array( $wiki, self::$blenderExcludeWikis ) ) {
 				continue;
 			}
-			$re = '%//([^.]*)\.([^.]*)\.([^/]*)%';
-			$str = self::$server;
-			$replacement = "//$wiki.$2.$3";
-			$domain = preg_replace($re, $replacement, $str);
+
+			$blenderMode = self::$blenderMode;
+			if ( $blenderMode == 'domain' ) {
+				$re = '%//([^.]*)\.([^.]*)\.([^/]*)%';
+				$str = self::$server;
+				$replacement = "//$wiki.$2.$3";
+				$domain = preg_replace($re, $replacement, $str);
+			} else {
+				$domain = ''; // not used in default 'path' based mode
+			}
 			$wikiInfo = array(
 				'path' => $wiki,
 				'domain' => $domain,
@@ -226,11 +247,13 @@ class WikiBlender {
 	public static function htmlHeader () {
 		$server = self::$server;
 		$json = json_encode (self::getAllWikis());
+		$blenderMode = self::getBlenderMode();
 
 		return
 			"<script type='text/javascript'>
 				var WikiBlenderServer = '$server';
 				var WikiBlenderWikis = $json;
+				var blenderMode = '$blenderMode';
 			</script>";
 	}
 

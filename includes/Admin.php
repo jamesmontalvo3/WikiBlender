@@ -7,7 +7,7 @@
     <?php echo WikiBlender::getResource( 'jquery-ui.min.js' ); ?>
     <?php echo WikiBlender::getResource( 'jquery-ui.min.css' ); ?>
     <?php echo WikiBlender::getResource( 'WikiBlender.css' ); ?>
-    <?php $server = WikiBlender::get_server(); ?>
+
 	<script>
 		$(document).tooltip({
 			content: function() {
@@ -18,10 +18,12 @@
 		$(document).ready(function(){
 
 			var wikis = WikiBlenderWikis;
-			var api = "w/api.php";
+			var api = (blenderMode == 'path') ? "api.php" : "w/api.php";
 
 			for (var i=0; i<wikis.length; i++) {
-                        	var url = wikis[i]['domain'] + api;
+
+
+                var url = (blenderMode == 'path') ? wikis[i] + api : wikis[i]['domain'] + api;
 
 				$.getJSON(
 					url,
@@ -71,7 +73,7 @@
 								list:    "allusers",
 								augroup: "sysop",
 								aulimit: 500,
-                                                                origin : "*",
+                                origin : "*",
 								format:  "json"
 
 							},
@@ -102,7 +104,7 @@
 								list:    "allusers",
 								augroup: "bureaucrat",
 								aulimit: 500,
-                                                                origin : "*",
+                                origin : "*",
 								format:  "json"
 
 							},
@@ -137,7 +139,7 @@
 								list:    "allusers",
 								augroup: "Curator",
 								aulimit: 500,
-                                                                origin : "*",
+                                origin : "*",
 								format:  "json"
 
 							},
@@ -171,7 +173,7 @@
 								list:    "allusers",
 								augroup: "Beta-tester",
 								aulimit: 500,
-                                                                origin : "*",
+                                origin : "*",
   								format:  "json"
 
 							},
