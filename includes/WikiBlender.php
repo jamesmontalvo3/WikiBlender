@@ -174,6 +174,7 @@ class WikiBlender {
 		$headerWikis = array();
 		$middleWikis = array();
 		$footerWikis = array();
+                $stagingPrefix = '';
 		foreach( $wikiDirs as $wiki ) {
 			if ( in_array( $wiki, self::$blenderExcludeWikis ) ) {
 				continue;
@@ -183,7 +184,11 @@ class WikiBlender {
 			if ( $blenderMode == 'domain' ) {
 				$re = '%//([^.]*)\.([^.]*)\.([^/]*)%';
 				$str = self::$server;
-				$replacement = "//$wiki.$2.$3";
+				// if in a staging environment, prepend the 'staging.' prefix
+				if ( stristr( $str, 'staging' ) ) {
+					$stagingPrefix="staging.";
+				}
+				$replacement = "//$stagingPrefix$wiki.$2.$3";
 				$domain = preg_replace($re, $replacement, $str);
 			} else {
 				$domain = ''; // not used in default 'path' based mode
