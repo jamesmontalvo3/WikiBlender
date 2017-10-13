@@ -6,6 +6,7 @@ class WikiBlender {
 
 	static $title = "Default Title";
 	static $server;
+	static $blenderMode; // default: 'path' or 'domain'
 	static $wikis;
 	static $footer_links = array();
 	static $admins = array();
@@ -44,6 +45,12 @@ class WikiBlender {
 			self::$server = $blenderServer;
 		} else {
 			die("Please add a server to your BlenderSettings file");
+		}
+
+		if ( isset($blenderMode ) ) {
+			self::$blenderMode = $blenderMode;
+		} else {
+			self::$blenderMode = "path";
 		}
 
 		if ( isset( $blenderScriptPath ) ) {
@@ -140,6 +147,14 @@ class WikiBlender {
 
 	// }
 
+	/** Is this Blender install based on paths (default) domain based */
+	public static function getBlenderMode() {
+		if ( ! isset( self::$blenderMode ) ) {
+			self::$blenderMode = 'path';
+		}
+		return self::$blenderMode;
+	}
+
 	public static function getWikiList () {
 
 		if ( ! isset( self::$blenderWikisDir ) ) {
@@ -159,12 +174,28 @@ class WikiBlender {
 		$headerWikis = array();
 		$middleWikis = array();
 		$footerWikis = array();
+                $stagingPrefix = '';
 		foreach( $wikiDirs as $wiki ) {
 			if ( in_array( $wiki, self::$blenderExcludeWikis ) ) {
 				continue;
 			}
+
+			$blenderMode = self::$blenderMode;
+			if ( $blenderMode == 'domain' ) {
+				$re = '%//([^.]*)\.([^.]*)\.([^/]*)%';
+				$str = self::$server;
+				// if in a staging environment, prepend the 'staging.' prefix
+				if ( stristr( $str, 'staging' ) ) {
+					$stagingPrefix="staging.";
+				}
+				$replacement = "//$stagingPrefix$wiki.$2.$3";
+				$domain = preg_replace($re, $replacement, $str);
+			} else {
+				$domain = ''; // not used in default 'path' based mode
+			}
 			$wikiInfo = array(
 				'path' => $wiki,
+				'domain' => $domain,
 				'name' => self::getWikiSiteName( $wiki ),
 				'logo' => "wikis/$wiki/config/logo.png"
 			);
@@ -220,31 +251,28 @@ class WikiBlender {
 
 	public static function htmlHeader () {
 		$server = self::$server;
-
-		$js_wiki = array();
-		foreach( self::getAllWikis() as $wiki ) {
-			$path = $wiki["path"];
-			$wiki_js_obj[] = "'$path':{}";
-		}
-		$wiki_js_obj = "{".implode(",",$wiki_js_obj)."}";
+		$json = json_encode (self::getAllWikis());
+		$blenderMode = self::getBlenderMode();
 
 		return
 			"<script type='text/javascript'>
 				var WikiBlenderServer = '$server';
-				var WikiBlenderWikis = $wiki_js_obj;
+				var WikiBlenderWikis = $json;
+				var blenderMode = '$blenderMode';
 			</script>";
 	}
 
 	public static function getLandingPageWikiBlock ( $wiki ) {
 
 		$path = $wiki['path'];
+		$domain = $wiki['domain'];
 		$name = $wiki['name'];
 		$logo = $wiki['logo'];
 
-		return
-			"<table class='wiki-block'>
-				<tr><td>
-					<a href='$path'>
+                return
+                        "<table class='wiki-block'>
+                                <tr><td>
+                                        <a href='${domain}wiki'>
 						<img src='$logo' />
 						<h3>$name</h3>
 					</a>

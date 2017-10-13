@@ -17,22 +17,22 @@
 
 		$(document).ready(function(){
 
-			var wikis = [];
-			for(var w in WikiBlenderWikis) {
-				wikis.push(w);
-			}
-
-			var api = "/api.php";
+			var wikis = WikiBlenderWikis;
+			var api = (blenderMode == 'path') ? "api.php" : "w/api.php";
 
 			for (var i=0; i<wikis.length; i++) {
 
+
+                var url = (blenderMode == 'path') ? wikis[i] + api : wikis[i]['domain'] + api;
+
 				$.getJSON(
-					WikiBlenderServer + wikis[i] + api,
+					url,
 					{
 						action : "query",
 						meta : "siteinfo",
 						format : "json",
-						siprop : "general|statistics"
+						siprop : "general|statistics",
+						origin : "*"
 					},
 					function(response) {
 						var info = response.query.general;
@@ -73,18 +73,19 @@
 								list:    "allusers",
 								augroup: "sysop",
 								aulimit: 500,
+								origin : "*",
 								format:  "json"
 
 							},
 							function( response ) {
 								var members = response.query.allusers;
-						        var userList = '';
-						        var userString;
-						        var wikiID = "#adminlist-" + info.wikiid;
+							        var userList = '';
+							        var userString;
+							        var wikiID = "#adminlist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-						            userList += "<li>" + userString + "</li>";
-						        }
+							            userList += "<li>" + userString + "</li>";
+							        }
 								$(wikiID).append( "<ul style='margin: 0px;'>" + userList + "</ul>" );
 							}
 						);//end list of admins
@@ -103,18 +104,19 @@
 								list:    "allusers",
 								augroup: "bureaucrat",
 								aulimit: 500,
+								origin : "*",
 								format:  "json"
 
 							},
 							function( response ) {
 								var members = response.query.allusers;
-						        var userList = '';
-						        var userString;
-						        var wikiID = "#bureaucratlist-" + info.wikiid;
+						        	var userList = '';
+						        	var userString;
+						        	var wikiID = "#bureaucratlist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-						            userList += "<li>" + userString + "</li>";
-						        }
+						            		userList += "<li>" + userString + "</li>";
+						        	}
 								$(wikiID).append( "<ul style='margin: 0px;'>" + userList + "</ul>" );
 							}
 						);//end list of bureaucrats
@@ -137,23 +139,24 @@
 								list:    "allusers",
 								augroup: "Curator",
 								aulimit: 500,
+								origin : "*",
 								format:  "json"
 
 							},
 							function( response ) {
 								var members = response.query.allusers;
-						        var userList = '';
-						        var userString;
-						        var wikiID = "#curatorlist-" + info.wikiid;
+						        	var userList = '';
+						        	var userString;
+						        	var wikiID = "#curatorlist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-						            userList += "<li>" + userString + "</li>";
-						        }
-						        if( response.warnings ){ } else {
-						        	if ( userString.length > 0 ){
-						        		$(wikiID).append( "<br />Curators:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
+						            		userList += "<li>" + userString + "</li>";
 						        	}
-						        };
+						 		if( response.warnings ){ } else {
+						        		if ( userString.length > 0 ){
+						        			$(wikiID).append( "<br />Curators:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
+						        		}
+						        	};
 							}
 						);//end list of curators
 
@@ -170,21 +173,22 @@
 								list:    "allusers",
 								augroup: "Beta-tester",
 								aulimit: 500,
-								format:  "json"
+								origin : "*",
+  								format:  "json"
 
 							},
 							function( response ) {
 								var members = response.query.allusers;
-						        var userList = '';
-						        var userString;
-						        var wikiID = "#beta-testerslist-" + info.wikiid;
+						        	var userList = '';
+						        	var userString;
+						        	var wikiID = "#beta-testerslist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-						            userList += "<li>" + userString + "</li>";
-						        }
-						        if( response.warnings ){ } else {
-						        	$(wikiID).append( "<br />Beta-Testers:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
-						        };
+						            		userList += "<li>" + userString + "</li>";
+						        	}
+						        	if( response.warnings ){ } else {
+						        		$(wikiID).append( "<br />Beta-Testers:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
+						        	};
 							}
 						);//end list of beta-testers
 
