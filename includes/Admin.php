@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <?php echo WikiBlender::htmlHeader(); ?>
-    <title><?php echo WikiBlender::get_title(); ?></title>
-    <?php echo WikiBlender::getResource( 'jquery.min.js' ); ?>
-    <?php echo WikiBlender::getResource( 'jquery-ui.min.js' ); ?>
-    <?php echo WikiBlender::getResource( 'jquery-ui.min.css' ); ?>
-    <?php echo WikiBlender::getResource( 'WikiBlender.css' ); ?>
+<head>
+	<?php echo WikiBlender::htmlHeader(); ?>
+	<title><?php echo WikiBlender::get_title(); ?></title>
+	<?php echo WikiBlender::getResource( 'jquery.min.js' ); ?>
+	<?php echo WikiBlender::getResource( 'jquery-ui.min.js' ); ?>
+	<?php echo WikiBlender::getResource( 'jquery-ui.min.css' ); ?>
+	<?php echo WikiBlender::getResource( 'WikiBlender.css' ); ?>
 
 	<script>
 		$(document).tooltip({
@@ -23,7 +23,7 @@
 			for (var i=0; i<wikis.length; i++) {
 
 
-                var url = (blenderMode == 'path') ? wikis[i] + api : wikis[i]['domain'] + api;
+				var url = (blenderMode == 'path') ? wikis[i] + api : wikis[i]['domain'] + api;
 
 				$.getJSON(
 					url,
@@ -70,7 +70,7 @@
 							apiURL,
 							{
 								action:  "query",
-								list:    "allusers",
+								list:	"allusers",
 								augroup: "sysop",
 								aulimit: 500,
 								origin : "*",
@@ -79,13 +79,13 @@
 							},
 							function( response ) {
 								var members = response.query.allusers;
-							        var userList = '';
-							        var userString;
-							        var wikiID = "#adminlist-" + info.wikiid;
+									var userList = '';
+									var userString;
+									var wikiID = "#adminlist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-							            userList += "<li>" + userString + "</li>";
-							        }
+										userList += "<li>" + userString + "</li>";
+									}
 								$(wikiID).append( "<ul style='margin: 0px;'>" + userList + "</ul>" );
 							}
 						);//end list of admins
@@ -101,7 +101,7 @@
 							apiURL,
 							{
 								action:  "query",
-								list:    "allusers",
+								list:	"allusers",
 								augroup: "bureaucrat",
 								aulimit: 500,
 								origin : "*",
@@ -110,13 +110,13 @@
 							},
 							function( response ) {
 								var members = response.query.allusers;
-						        	var userList = '';
-						        	var userString;
-						        	var wikiID = "#bureaucratlist-" + info.wikiid;
+								var userList = '';
+								var userString;
+								var wikiID = "#bureaucratlist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-						            		userList += "<li>" + userString + "</li>";
-						        	}
+									userList += "<li>" + userString + "</li>";
+								}
 								$(wikiID).append( "<ul style='margin: 0px;'>" + userList + "</ul>" );
 							}
 						);//end list of bureaucrats
@@ -136,7 +136,7 @@
 							apiURL,
 							{
 								action:  "query",
-								list:    "allusers",
+								list:	"allusers",
 								augroup: "Curator",
 								aulimit: 500,
 								origin : "*",
@@ -145,18 +145,18 @@
 							},
 							function( response ) {
 								var members = response.query.allusers;
-						        	var userList = '';
-						        	var userString;
-						        	var wikiID = "#curatorlist-" + info.wikiid;
+								var userList = '';
+								var userString;
+								var wikiID = "#curatorlist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-						            		userList += "<li>" + userString + "</li>";
-						        	}
-						 		if( response.warnings ){ } else {
-						        		if ( userString.length > 0 ){
-						        			$(wikiID).append( "<br />Curators:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
-						        		}
-						        	};
+									userList += "<li>" + userString + "</li>";
+								}
+								if( response.warnings ){ } else {
+									if ( userString.length > 0 ){
+										$(wikiID).append( "<br />Curators:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
+									}
+								};
 							}
 						);//end list of curators
 
@@ -170,25 +170,25 @@
 							apiURL,
 							{
 								action:  "query",
-								list:    "allusers",
+								list:	"allusers",
 								augroup: "Beta-tester",
 								aulimit: 500,
 								origin : "*",
-  								format:  "json"
+								format:  "json"
 
 							},
 							function( response ) {
 								var members = response.query.allusers;
-						        	var userList = '';
-						        	var userString;
-						        	var wikiID = "#beta-testerslist-" + info.wikiid;
+								var userList = '';
+								var userString;
+								var wikiID = "#beta-testerslist-" + info.wikiid;
 								for(var i = 0; i < members.length; i++) {
 									userString = members[i].name + " (User #" + members[i].userid + ")";
-						            		userList += "<li>" + userString + "</li>";
-						        	}
-						        	if( response.warnings ){ } else {
-						        		$(wikiID).append( "<br />Beta-Testers:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
-						        	};
+									userList += "<li>" + userString + "</li>";
+								}
+								if( response.warnings ){ } else {
+									$(wikiID).append( "<br />Beta-Testers:<br /><ul style='margin: 0px;'>" + userList + "</ul>" );
+								};
 							}
 						);//end list of beta-testers
 
@@ -209,10 +209,10 @@
 			}
 
 		});
-    </script>
-  </head>
-  <body>
-    <div id="container">
+	</script>
+</head>
+<body>
+	<div id="container">
 		<h1><?php echo WikiBlender::get_title(); ?></h1>
 		<h2>MediaWiki Installations</h2>
 		<table id="versions"></table>
@@ -227,6 +227,6 @@
 	<!--
 		<div class="wiki-title">
 	-->
-  </body><?php
+</body><?php
 
 ?></html>

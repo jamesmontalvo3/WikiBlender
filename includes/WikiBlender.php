@@ -174,7 +174,7 @@ class WikiBlender {
 		$headerWikis = array();
 		$middleWikis = array();
 		$footerWikis = array();
-                $stagingPrefix = '';
+		$stagingPrefix = '';
 		foreach( $wikiDirs as $wiki ) {
 			if ( in_array( $wiki, self::$blenderExcludeWikis ) ) {
 				continue;
@@ -269,10 +269,10 @@ class WikiBlender {
 		$name = $wiki['name'];
 		$logo = $wiki['logo'];
 
-                return
-                        "<table class='wiki-block'>
-                                <tr><td>
-                                        <a href='${domain}wiki'>
+		return
+			"<table class='wiki-block'>
+				<tr><td>
+					<a href='${domain}wiki'>
 						<img src='$logo' />
 						<h3>$name</h3>
 					</a>
